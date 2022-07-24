@@ -1,6 +1,6 @@
 # SysY 性能比较工具
 
-给出两份由 [评测程序](https://github.com/dhy2000/sysy-test) 生成的 json 格式评测结果，对比这两份结果的性能差异。
+给出两份由 [评测程序](https://github.com/Meow-Twice/sysy-test) 生成的 json 格式评测结果，对比这两份结果的性能差异。
 
 ## 使用说明
 

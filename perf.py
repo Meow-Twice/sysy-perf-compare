@@ -7,13 +7,13 @@ from math import nan, isclose
 
 columns = ['series', 'case_name', 'time1', 'time2', 'rate', 'effect']
 
-pattern_perf = re.compile(r'TOTAL: \d+H\-\d+M\-\d+S\-\d+us')
+pattern_perf = re.compile(r'TOTAL: (\d+)H\-(\d+)M\-(\d+)S\-(\d+)us')
 
 def parse_sec(perf: str) -> float:
     groups = pattern_perf.findall(perf)
     assert len(groups) == 1
-    t = datetime.strptime(groups[0], 'TOTAL: %HH-%MM-%SS-%fus')
-    return t.hour * 3600 + t.minute * 60 + t.second + 1e-6 * t.microsecond
+    hour, minute, sec, micro = map(int, groups[0])
+    return hour * 3600 + minute * 60 + sec + 1e-6 * micro
 
 def calc_rate(tim1: float, tim2: float) -> float:
     return tim1 / tim2
@@ -42,7 +42,8 @@ time2 = dict()
 for r in result2:
     try:
         perf_sec = parse_sec(r['perf'])
-    except:
+    except Exception as e:
+        print(e)
         continue
     time2[(r['series_name'], r['case_name'])] = perf_sec
 

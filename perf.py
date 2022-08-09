@@ -29,6 +29,8 @@ with open(file1, 'r') as fp:
 
 time1 = dict()
 for r in result1:
+    if r['verdict'] != "ACCEPTED":
+        continue
     try:
         perf_sec = parse_sec(r['perf'])
     except:
@@ -40,6 +42,8 @@ with open(file2, 'r') as fp:
 
 time2 = dict()
 for r in result2:
+    if r['verdict'] != "ACCEPTED":
+        continue
     try:
         perf_sec = parse_sec(r['perf'])
     except Exception as e:
@@ -48,7 +52,9 @@ for r in result2:
     time2[(r['series_name'], r['case_name'])] = perf_sec
 
 table = prettytable.PrettyTable(field_names=columns)
+count = 0
 for series, casename in sorted(set(time1.keys()).intersection(time2.keys())):
+    count += 1
     tim1, tim2 = time1[(series, casename)], time2[(series, casename)]
     try:
         rate = calc_rate(tim1, tim2)
@@ -58,3 +64,4 @@ for series, casename in sorted(set(time1.keys()).intersection(time2.keys())):
     table.add_row((series, casename, '{0:.4f}'.format(tim1), '{0:.4f}'.format(tim2), '{0:.4f}'.format(rate), effect))
 
 print(table)
+print('Total {0} testcase diffs.'.format(count))

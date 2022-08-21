@@ -1,7 +1,6 @@
 import sys
 import re
 import json
-from datetime import datetime
 import prettytable
 from math import nan, isclose
 
@@ -53,15 +52,21 @@ for r in result2:
 
 table = prettytable.PrettyTable(field_names=columns)
 count = 0
+rates = []
 for series, casename in sorted(set(time1.keys()).intersection(time2.keys())):
     count += 1
     tim1, tim2 = time1[(series, casename)], time2[(series, casename)]
     try:
         rate = calc_rate(tim1, tim2)
+        rates.append(rate)
     except:
         rate = nan
+        rates.append(0)
     effect = '.' if isclose(tim1, tim2) else ('+' if tim1 >= tim2 else '-')
     table.add_row((series, casename, '{0:.4f}'.format(tim1), '{0:.4f}'.format(tim2), '{0:.4f}'.format(rate), effect))
 
 print(table)
 print('Total {0} testcase diffs.'.format(count))
+
+# calc contest score - tim1: std, tim2: ours
+print('score = {0:.2f}'.format(100 / count * sum(rates)))
